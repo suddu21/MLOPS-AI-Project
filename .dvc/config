@@ -1,0 +1,6 @@
+[core]
+    remote = mylocal
+['remote "mydrive"']
+    url = https://drive.google.com/drive/folders/1drgyUzXTqVwckkI5jHZSjxzz8oVNZyJT?usp=sharing
+['remote "mylocal"']
+    url = ../mydvc
