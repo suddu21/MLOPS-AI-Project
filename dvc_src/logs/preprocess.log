@@ -1,0 +1,4 @@
+INFO:root:Starting data preprocessing...
+INFO:root:Test data saved to C:\Users\sudha\Desktop\My-Data\Education\IITM\2nd-sem\ML-Ops-Lab\MLOPS-AI-Project\dvc_src\data\test_data.csv
+INFO:root:Test set size: 1000
+INFO:root:Transformed data saved to C:\Users\sudha\Desktop\My-Data\Education\IITM\2nd-sem\ML-Ops-Lab\MLOPS-AI-Project\dvc_src\data\transformed_data.csv

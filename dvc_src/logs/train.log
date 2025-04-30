@@ -1,0 +1,42 @@
+INFO:root:Starting model training...
+INFO:root:Transformed dataset loaded successfully. Shape: (564740, 31)
+INFO:root:Class distribution:
+Class
+0    282370
+1    282370
+Name: count, dtype: int64
+INFO:root:Loading pre-saved test set...
+INFO:root:Test set loaded successfully. Shape: (1000, 31)
+INFO:root:Test set Class 1 count: 100
+INFO:root:Training set shape: (480029, 30)
+INFO:root:Validation set shape: (84711, 30)
+INFO:root:
+Starting hyperparameter grid search...
+INFO:root:Grid search completed.
+INFO:root:
+Evaluating hyperparameter combination: RF_n_estimators_100_max_depth_10
+INFO:root:Cross-validation F1-score: 0.9866 (+/- 0.0005)
+INFO:root:Evaluating on validation set...
+INFO:root:Validation Confusion Matrix:
+INFO:root:[[42297    59]
+ [ 1002 41353]]
+INFO:root:Evaluating on pre-saved test set...
+INFO:root:Test Confusion Matrix:
+INFO:root:[[899   1]
+ [ 27  73]]
+INFO:root:
+Validation Metrics:
+INFO:root:Accuracy: 0.9875, Precision: 0.9986, Recall: 0.9763, F1: 0.9873, AUC: 0.9997, Balanced Accuracy: 0.9875
+INFO:root:
+Test Metrics:
+INFO:root:Accuracy: 0.9720, Precision: 0.9865, Recall: 0.7300, F1: 0.8391, AUC: 0.9942, Balanced Accuracy: 0.8644
+INFO:root:
+Training best model with optimal hyperparameters...
+INFO:root:Evaluating best model on validation set...
+INFO:root:Evaluating best model on test set...
+INFO:root:
+Saving best model, scaler, and feature names to C:\Users\sudha\Desktop\My-Data\Education\IITM\2nd-sem\ML-Ops-Lab\MLOPS-AI-Project\dvc_src\models/fraud_model.pkl...
+INFO:root:Model training completed successfully
+INFO:root:Best Parameters: {'max_depth': 10, 'n_estimators': 100}
+INFO:root:Validation Metrics - Accuracy: 0.9874750622705434, Precision: 0.9985752921858398, Recall: 0.9763428166686342, F1: 0.9873339143099311, AUC: 0.9996599710417299, Balanced Accuracy: 0.9874749308576904
+INFO:root:Test Metrics - Accuracy: 0.972, Precision: 0.9864864864864865, Recall: 0.73, F1: 0.8390804597701149, AUC: 0.9942444444444444, Balanced Accuracy: 0.8644444444444445

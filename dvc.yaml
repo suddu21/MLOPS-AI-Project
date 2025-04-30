@@ -1,32 +1,32 @@
 stages:
   transform_feedback:
-    cmd: python transform_feedback.py
+    cmd: python dvc_src/transform_feedback.py
     deps:
-      - raw_feedback.csv
+      - dvc_src/data/raw_feedback.csv
     outs:
-      - transformed_feedback.csv
+      - dvc_src/data/transformed_feedback.csv
   ingest:
-    cmd: python ingest.py
+    cmd: python dvc_src/ingest.py
     deps:
-      - ingest.py
-      - creditcard.csv
+      - dvc_src/ingest.py
+      - dvc_src/data/creditcard.csv
     outs:
-      - processed_data.csv
+      - dvc_src/data/processed_data.csv
 
   preprocess:
-    cmd: python preprocess.py
+    cmd: python dvc_src/preprocess.py
     deps:
-      - preprocess.py
-      - processed_data.csv
+      - dvc_src/preprocess.py
+      - dvc_src/data/processed_data.csv
     outs:
-      - transformed_data.csv
-      - test_data.csv
+      - dvc_src/data/transformed_data.csv
+      - dvc_src/data/test_data.csv
 
   train:
-    cmd: python train.py
+    cmd: python dvc_src/train.py
     deps:
-      - train.py
-      - transformed_data.csv
-      - test_data.csv
+      - dvc_src/train.py
+      - dvc_src/data/transformed_data.csv
+      - dvc_src/data/test_data.csv
     outs:
-      - models/fraud_model.pkl
+      - dvc_src/models/fraud_model.pkl

@@ -1,70 +1,70 @@
 schema: '2.0'
 stages:
   ingest:
-    cmd: python ingest.py
+    cmd: python dvc_src/ingest.py
     deps:
-    - path: creditcard.csv
+    - path: dvc_src/data/creditcard.csv
       hash: md5
       md5: e90efcb83d69faf99fcab8b0255024de
       size: 150828752
-    - path: ingest.py
+    - path: dvc_src/ingest.py
       hash: md5
-      md5: e2e974160b2c7b6a49b095178f0ed205
-      size: 647
+      md5: 7a21cffd75f19d046783e3d0e38173a7
+      size: 1767
     outs:
-    - path: processed_data.csv
+    - path: dvc_src/data/processed_data.csv
       hash: md5
-      md5: e5986c63f371b335fceb7778f4ca65c9
-      size: 151102405
+      md5: 3dce28f0a3977ff8c4c29a48915704af
+      size: 150538653
   preprocess:
-    cmd: python preprocess.py
+    cmd: python dvc_src/preprocess.py
     deps:
-    - path: preprocess.py
+    - path: dvc_src/data/processed_data.csv
       hash: md5
-      md5: 54ebbcd041b66b732ce97a1092758a96
-      size: 1610
-    - path: processed_data.csv
+      md5: 3dce28f0a3977ff8c4c29a48915704af
+      size: 150538653
+    - path: dvc_src/preprocess.py
       hash: md5
-      md5: e5986c63f371b335fceb7778f4ca65c9
-      size: 151102405
+      md5: 0dd6a46c1f1818e25646065f9bfc28e5
+      size: 2252
     outs:
-    - path: test_data.csv
+    - path: dvc_src/data/test_data.csv
       hash: md5
-      md5: 7a3a77b06080a3e342b4816eabba2854
-      size: 529450
-    - path: transformed_data.csv
+      md5: 7d35384beb447bb24a24289954c39ae0
+      size: 529730
+    - path: dvc_src/data/transformed_data.csv
       hash: md5
-      md5: 43138f65fe1efba290c037cc55d4bf96
-      size: 335057342
+      md5: 2cf8351e9762664cc3caff1b22b9279c
+      size: 333878051
   train:
-    cmd: python train.py
+    cmd: python dvc_src/train.py
     deps:
-    - path: test_data.csv
+    - path: dvc_src/data/test_data.csv
       hash: md5
-      md5: 7a3a77b06080a3e342b4816eabba2854
-      size: 529450
-    - path: train.py
+      md5: 7d35384beb447bb24a24289954c39ae0
+      size: 529730
+    - path: dvc_src/data/transformed_data.csv
       hash: md5
-      md5: cd5d72174169a6435a9ab540b15b6e87
-      size: 11689
-    - path: transformed_data.csv
+      md5: 2cf8351e9762664cc3caff1b22b9279c
+      size: 333878051
+    - path: dvc_src/train.py
       hash: md5
-      md5: 43138f65fe1efba290c037cc55d4bf96
-      size: 335057342
+      md5: dcb74a5e444cd077aa60bfb67740ce93
+      size: 12735
     outs:
-    - path: models/fraud_model.pkl
+    - path: dvc_src/models/fraud_model.pkl
       hash: md5
-      md5: 9388e04cbffc3cf6bbf5350bf99bd3f1
-      size: 3785809
+      md5: 462a66b9585e149fde988b557a1952a0
+      size: 3654289
   transform_feedback:
-    cmd: python transform_feedback.py
+    cmd: python dvc_src/transform_feedback.py
     deps:
-    - path: raw_feedback.csv
+    - path: dvc_src/data/raw_feedback.csv
       hash: md5
       md5: 3b433750df3f754f328d4d0a9754ac1b
       size: 11540
     outs:
-    - path: transformed_feedback.csv
+    - path: dvc_src/data/transformed_feedback.csv
       hash: md5
       md5: a98039b4cecb2f33faa80875576ce000
       size: 6673
