@@ -7,12 +7,12 @@ A Machine Learning Operations (MLOps) project that implements a fraud detection 
 This project implements a robust fraud detection system that:
 - Uses machine learning to identify potentially fraudulent transactions
 - Implements MLOps best practices for model training and deployment
-- Provides a web interface for real-time transaction monitoring
-- Includes comprehensive documentation and evaluation guidelines
+- Provides a web interface for predicting fraud transactions
+- Includes comprehensive documentation
 
 ## Key Components
 
-- **ML Pipeline**: Automated training and evaluation pipeline using DVC
+- **ML and Data Pipeline**: Automated training and evaluation pipeline using DVC
 - **Web Application**: User-friendly interface for transaction monitoring
 - **Model Management**: Version control for ML models and experiments
 - **Documentation**: Detailed HLD, LLD, and user manual
@@ -45,11 +45,7 @@ This project implements a robust fraud detection system that:
 ## Technologies Used
 
 - Python
-- DVC (Data Version Control)
+- DVC
 - MLflow
-- Web Framework (Flask/Django)
-- Machine Learning Libraries
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+- FastAPI
+- Streamlit
