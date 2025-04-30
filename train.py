@@ -4,16 +4,17 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 from sklearn.metrics import roc_auc_score, confusion_matrix, balanced_accuracy_score
+from sklearn.preprocessing import StandardScaler
 import pandas as pd
-import joblib
+import numpy as np
+import pickle
 import logging
 import matplotlib.pyplot as plt
 import seaborn as sns
-import numpy as np
 
 # Define paths (adjust these based on your environment)
 TRANSFORMED_DATA_PATH = 'transformed_data.csv'
-MODEL_PATH = 'models/fraud_model.joblib'
+MODEL_PATH = 'models/fraud_model.pkl'
 TEST_DATA_PATH = 'test_data.csv'
 
 def plot_confusion_matrix(y_true, y_pred, title, filename):
@@ -29,7 +30,7 @@ def plot_confusion_matrix(y_true, y_pred, title, filename):
     return cm
 
 def train_model():
-    """Train a RandomForestClassifier with hyperparameter grid search, using pre-saved test set."""
+    """Train a RandomForestClassifier with hyperparameter grid search, using pre-saved test set, and save with scaler."""
     try:
         # Load preprocessed data
         print("Loading transformed dataset...")
@@ -38,6 +39,10 @@ def train_model():
         print(f"Class distribution:\n{df['Class'].value_counts()}")
         X = df.drop('Class', axis=1)
         y = df['Class']
+
+        # Log the feature names and order
+        feature_names = list(X.columns)
+        print(f"Training feature names (order matters): {feature_names}")
 
         # Load pre-saved test set
         print("Loading pre-saved test set...")
@@ -55,6 +60,12 @@ def train_model():
         print(f"Training set shape: {X_train.shape}")
         print(f"Validation set shape: {X_val.shape}")
 
+        # Scale features
+        scaler = StandardScaler()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_val_scaled = scaler.transform(X_val)
+        X_test_scaled = scaler.transform(X_test)
+
         # Define hyperparameter grid
         param_grid = {
             'n_estimators': [100],
@@ -69,14 +80,15 @@ def train_model():
         grid_search = GridSearchCV(
             estimator=base_model,
             param_grid=param_grid,
-            cv=3,
+            cv=2,
             scoring='f1',
             n_jobs=-1,
-            verbose=1
+            verbose=2,
+            refit=True,
         )
 
-        # Fit grid search on training data
-        grid_search.fit(X_train, y_train)
+        # Fit grid search on scaled training data
+        grid_search.fit(X_train_scaled, y_train)
         print("Grid search completed.")
 
         # Iterate over each hyperparameter combination
@@ -90,18 +102,13 @@ def train_model():
                 print(f"\nEvaluating hyperparameter combination: {run_name}")
                 print(f"Cross-validation F1-score: {mean_score:.4f} (+/- {std_score:.4f})")
 
-                # Train model with current parameters
-                model = RandomForestClassifier(
-                    n_estimators=params['n_estimators'],
-                    max_depth=params['max_depth'],
-                    random_state=42
-                )
-                model.fit(X_train, y_train)
+                # Use the best estimator from grid search
+                model = grid_search.best_estimator_
 
                 # Evaluate on validation set
                 print("Evaluating on validation set...")
-                y_val_pred = model.predict(X_val)
-                y_val_proba = model.predict_proba(X_val)[:, 1]
+                y_val_pred = model.predict(X_val_scaled)
+                y_val_proba = model.predict_proba(X_val_scaled)[:, 1]
                 val_accuracy = accuracy_score(y_val, y_val_pred)
                 val_precision = precision_score(y_val, y_val_pred)
                 val_recall = recall_score(y_val, y_val_pred)
@@ -116,8 +123,8 @@ def train_model():
 
                 # Evaluate on pre-saved test set
                 print("Evaluating on pre-saved test set...")
-                y_test_pred = model.predict(X_test)
-                y_test_proba = model.predict_proba(X_test)[:, 1]
+                y_test_pred = model.predict(X_test_scaled)
+                y_test_proba = model.predict_proba(X_test_scaled)[:, 1]
                 test_accuracy = accuracy_score(y_test, y_test_pred)
                 test_precision = precision_score(y_test, y_test_pred)
                 test_recall = recall_score(y_test, y_test_pred)
@@ -163,7 +170,7 @@ def train_model():
                 # Log model
                 mlflow.sklearn.log_model(model, "fraud_detection_model")
 
-        # Train and save the best model
+        # Train and save the best model with scaler
         print("\nTraining best model with optimal hyperparameters...")
         best_params = grid_search.best_params_
         best_model = RandomForestClassifier(
@@ -171,12 +178,12 @@ def train_model():
             max_depth=best_params['max_depth'],
             random_state=42
         )
-        best_model.fit(X_train, y_train)
+        best_model.fit(X_train_scaled, y_train)
 
         # Evaluate best model on validation and test sets
         print("Evaluating best model on validation set...")
-        y_val_pred = best_model.predict(X_val)
-        y_val_proba = best_model.predict_proba(X_val)[:, 1]
+        y_val_pred = best_model.predict(X_val_scaled)
+        y_val_proba = best_model.predict_proba(X_val_scaled)[:, 1]
         val_accuracy = accuracy_score(y_val, y_val_pred)
         val_precision = precision_score(y_val, y_val_pred)
         val_recall = recall_score(y_val, y_val_pred)
@@ -185,8 +192,8 @@ def train_model():
         val_balanced_accuracy = balanced_accuracy_score(y_val, y_val_pred)
 
         print("Evaluating best model on test set...")
-        y_test_pred = best_model.predict(X_test)
-        y_test_proba = best_model.predict_proba(X_test)[:, 1]
+        y_test_pred = best_model.predict(X_test_scaled)
+        y_test_proba = best_model.predict_proba(X_test_scaled)[:, 1]
         test_accuracy = accuracy_score(y_test, y_test_pred)
         test_precision = precision_score(y_test, y_test_pred)
         test_recall = recall_score(y_test, y_test_pred)
@@ -212,9 +219,10 @@ def train_model():
             mlflow.log_metric("test_balanced_accuracy", test_balanced_accuracy)
             mlflow.sklearn.log_model(best_model, "best_fraud_detection_model")
 
-        # Save best model for inference
-        print(f"\nSaving best model to {MODEL_PATH}...")
-        joblib.dump(best_model, MODEL_PATH)
+        # Save best model, scaler, and feature names as a dictionary using pickle
+        print(f"\nSaving best model, scaler, and feature names to {MODEL_PATH}...")
+        with open(MODEL_PATH, 'wb') as f:
+            pickle.dump({'model': best_model, 'scaler': scaler, 'feature_names': feature_names}, f)
         logging.info("Model training completed successfully")
         logging.info(f"Best Parameters: {best_params}")
         logging.info(f"Validation Metrics - Accuracy: {val_accuracy}, Precision: {val_precision}, Recall: {val_recall}, F1: {val_f1}, AUC: {val_auc}, Balanced Accuracy: {val_balanced_accuracy}")

@@ -1,0 +1,32 @@
+stages:
+  transform_feedback:
+    cmd: python transform_feedback.py
+    deps:
+      - raw_feedback.csv
+    outs:
+      - transformed_feedback.csv
+  ingest:
+    cmd: python ingest.py
+    deps:
+      - ingest.py
+      - creditcard.csv
+    outs:
+      - processed_data.csv
+
+  preprocess:
+    cmd: python preprocess.py
+    deps:
+      - preprocess.py
+      - processed_data.csv
+    outs:
+      - transformed_data.csv
+      - test_data.csv
+
+  train:
+    cmd: python train.py
+    deps:
+      - train.py
+      - transformed_data.csv
+      - test_data.csv
+    outs:
+      - models/fraud_model.pkl

@@ -1,5 +1,0 @@
-outs:
-- md5: 50bc80b67637b4bd3565923557b6beaa
-  size: 335516833
-  hash: md5
-  path: transformed_data.csv

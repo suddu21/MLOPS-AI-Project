@@ -1,7 +1,4 @@
-creditcard.csv
 airflow_env/
-transformed_data.csv
-old_transformed_data.csv
-test_data.csv
 mlruns/
 mydvc/
+*.csv

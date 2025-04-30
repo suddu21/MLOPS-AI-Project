@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app/models:/app/models
+    networks:
+      - fraud-detection-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    volumes:
+      - C:/Users/sudha/Desktop/My-Data/Education/IITM/2nd-sem/ML-Ops-Lab/MLOPS-AI-Project:/app/data
+    networks:
+      - fraud-detection-network
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - fraud-detection-network
+
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    networks:
+      - fraud-detection-network
+
+networks:
+  fraud-detection-network:
+    driver: bridge
