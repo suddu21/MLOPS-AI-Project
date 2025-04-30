@@ -36,6 +36,11 @@ NETWORK_IO_SENT = Counter("system_network_io_sent_bytes", "Network sent bytes")
 NETWORK_IO_RECEIVED = Counter("system_network_io_received_bytes", "Network received bytes")
 FILE_HANDLES = Gauge("system_file_handles", "Number of open file handles")
 
+logging.basicConfig(level=logging.INFO,
+                    handlers=[logging.FileHandler("app.log"), logging.StreamHandler()],
+                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.info("Starting FastAPI application...")
+
 # Load the model, scaler, and feature names
 MODEL_PATH = "/app/models/fraud_model.pkl"
 try:
@@ -123,7 +128,7 @@ async def predict(file: UploadFile = File(...)):
 
 @app.get("/health")
 async def health_check():
-    REQUEST_COUNT.labels(endpoint="/health", client_ip="unknown").inc()
+    REQUEST_COUNT.labels(endpoint="/health", client_ip="mylocal").inc()
     with REQUEST_LATENCY.labels(endpoint="/health").time():
         update_system_metrics()
         return {"status": "healthy"}

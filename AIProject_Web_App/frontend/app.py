@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 import json
+import logging
 import os
 
 # Set page configuration for a wider layout and custom title
@@ -19,6 +20,7 @@ if 'feedback_data' not in st.session_state:
 st.sidebar.title("About")
 st.sidebar.write("**Fraudulent Transaction Detector**")
 st.sidebar.write("**Maintainer:** Sudhanva Satish DA24M023")
+st.sidebar.write("This web-app has been created as part of the ML Ops course end to end AI project")
 st.sidebar.write("---")
 
 # Main content
@@ -27,7 +29,6 @@ st.write("### Welcome!")
 st.write("""
 **Instructions:**
 - Upload a CSV file containing transaction data with columns: `Time`, `Amount`, `V1` to `V28`.
-- Ensure the data is formatted with these columns in the same order as used during training.
 - Click the 'Predict' button to detect fraudulent transactions.
 - Review the predictions and use checkboxes to mark incorrect predictions (check the box if the prediction is wrong).
 - Click 'Save Feedback' to record your feedback for future model retraining.

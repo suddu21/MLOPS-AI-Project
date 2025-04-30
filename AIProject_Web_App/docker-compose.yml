@@ -17,7 +17,7 @@ services:
     depends_on:
       - backend
     volumes:
-      - C:/Users/sudha/Desktop/My-Data/Education/IITM/2nd-sem/ML-Ops-Lab/MLOPS-AI-Project:/app/data
+      - C:\Users\sudha\Desktop\My-Data\Education\IITM\2nd-sem\ML-Ops-Lab\MLOPS-AI-Project\dvc_src\data:/app/data
     networks:
       - fraud-detection-network
 
